@@ -10,7 +10,7 @@ import java.util.Random;
  * Class that represents the map for the Capture the Flag game.
  * The map is composed of locations and paths between them, represented by a network.
  */
-class GameMap implements IGameMap {
+public class GameMap implements IGameMap {
     private final Network<Location> locations;
 
     public GameMap() {

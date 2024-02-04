@@ -1,18 +1,26 @@
 package org.example;
 
+import org.example.MovementStrategy.MovementStrategy;
+
 public class Bot {
-    private final StrategiesType strategy;
+    private MovementStrategy strategy;
     private final String playerName;
     private Location botLocation;
 
-    public Bot(StrategiesType strategy, String playerName, Location botLocation) {
+    private boolean hasFlag;
+
+    public Bot(MovementStrategy strategy, String playerName, Location botLocation) {
         this.strategy = strategy;
         this.playerName = playerName;
         this.botLocation = botLocation;
     }
 
-    public StrategiesType getStrategy() {
+    public MovementStrategy getStrategy() {
         return strategy;
+    }
+
+    public void setStrategy(MovementStrategy strategy) {
+        this.strategy = strategy;
     }
 
     public String getPlayerName() {
@@ -27,17 +35,31 @@ public class Bot {
         this.botLocation = botLocation;
     }
 
-    public void executeMovement() {
+    public void executeMovement(GameMap gameMap) {
         if (strategy != null) {
-
+            Location nextLocation = strategy.nextMove(this, gameMap);
+            if (nextLocation != null) {
+                setBotLocation(nextLocation);
+                System.out.println("Bot moved to: " + nextLocation);
+            }
         }
+    }
+
+    public boolean hasFlag() {
+        return hasFlag;
+    }
+
+    public void setHasFlag(boolean hasFlag) {
+        this.hasFlag = hasFlag;
     }
 
     @Override
     public String toString() {
-        return "Bot: " +
-                "\n Strategy - " + strategy.toString() +
-                "\n Assigned - " + playerName +
-                "\n " + botLocation + "\n";
+        return "Bot{" +
+                "strategy=" + strategy +
+                ", playerName='" + playerName + '\'' +
+                ", botLocation=" + botLocation +
+                '}';
     }
 }
+
