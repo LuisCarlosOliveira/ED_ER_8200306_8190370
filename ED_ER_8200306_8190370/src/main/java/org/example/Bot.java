@@ -1,20 +1,23 @@
 package org.example;
 
 import org.example.MovementStrategy.MovementStrategy;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Bot {
+    private static final AtomicInteger idGenerator = new AtomicInteger(0); // For unique ID generation
+    private final int id; // Unique ID for each bot
     private MovementStrategy strategy;
-    private final String playerName;
+    private final Player player;
     private Location botLocation;
-
     private boolean hasFlag;
 
-    public Bot(MovementStrategy strategy, String playerName, Location botLocation) {
+
+    public Bot(MovementStrategy strategy, Player player, Location botLocation) {
+        this.id = idGenerator.incrementAndGet(); // Assign and increment the unique ID
         this.strategy = strategy;
-        this.playerName = playerName;
+        this.player = player;
         this.botLocation = botLocation;
     }
-
     public MovementStrategy getStrategy() {
         return strategy;
     }
@@ -23,8 +26,8 @@ public class Bot {
         this.strategy = strategy;
     }
 
-    public String getPlayerName() {
-        return playerName;
+    public Player getPlayer() {
+        return player;
     }
 
     public Location getBotLocation() {
@@ -53,11 +56,16 @@ public class Bot {
         this.hasFlag = hasFlag;
     }
 
+    public int getId() {
+        return id;
+    }
+
     @Override
     public String toString() {
         return "Bot{" +
-                "strategy=" + strategy +
-                ", playerName='" + playerName + '\'' +
+                "id=" + id +
+                ", strategy=" + strategy +
+                ", playerName='" + player.getName() + '\'' +
                 ", botLocation=" + botLocation +
                 '}';
     }

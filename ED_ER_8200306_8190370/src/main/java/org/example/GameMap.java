@@ -13,6 +13,9 @@ import java.util.Random;
 public class GameMap implements IGameMap {
     private final Network<Location> locations;
 
+    private Flag playerOneFlag;
+    private Flag playerTwoFlag;
+
     public GameMap() {
         this.locations = new Network<>();
     }
@@ -168,6 +171,19 @@ public class GameMap implements IGameMap {
         String result;
         result = this.locations.toString();
         return result.toString();
+    }
+
+    public void setFlags(Flag playerOneFlag, Flag playerTwoFlag) {
+        this.playerOneFlag = playerOneFlag;
+        this.playerTwoFlag = playerTwoFlag;
+    }
+
+    public Location  getPlayerOneFlagLocation () {
+        return playerOneFlag.getCurrentLocation();
+    }
+
+    public Location  getPlayerTwoFlagLocation () {
+        return playerTwoFlag.getCurrentLocation();
     }
 }
 

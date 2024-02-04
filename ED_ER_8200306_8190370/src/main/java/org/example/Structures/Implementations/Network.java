@@ -653,4 +653,5 @@ public class Network<T> extends Graph<T> implements NetworkADT<T> {
         vertices = largerVertices;
         networkAdjMatrix = largerAdjMatrix;
     }
+
 }
