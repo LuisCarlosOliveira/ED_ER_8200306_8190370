@@ -1,6 +1,7 @@
 package org.example;
 
 import org.example.Interfaces.IGameMap;
+import org.example.Structures.Implementations.ArrayUnorderedList;
 import org.example.Structures.Implementations.Network;
 
 import java.io.*;
@@ -89,10 +90,12 @@ public class GameMap implements IGameMap {
     /**
      * Exports the current map to a file.
      *
-     * @param pathFile The file path for export.
+     * @param fileName The file name  for export.
      */
-    public void exportMap(String pathFile) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(pathFile))) {
+    public void exportMap(String fileName) {
+        String currentDir = System.getProperty("user.dir");
+        String fullPath = currentDir + File.separator + fileName;
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fullPath))) {
             // Use the toString method to get the network's string representation
             String networkData = locations.toString();
             // Write this string to the file
@@ -105,10 +108,12 @@ public class GameMap implements IGameMap {
     /**
      * Imports a map from a file.
      *
-     * @param filePath The file path to import from.
+     * @param fileName The file name to import from.
      */
-    public void importMap(String filePath) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+    public void importMap(String fileName) {
+        // Constrói o caminho completo
+        String filePath = System.getProperty("user.dir") + File.separator + fileName;
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))){
             String line;
             boolean parsingVertices = false, parsingEdges = false;
 
@@ -185,5 +190,6 @@ public class GameMap implements IGameMap {
     public Location  getPlayerTwoFlagLocation () {
         return playerTwoFlag.getCurrentLocation();
     }
+
 }
 

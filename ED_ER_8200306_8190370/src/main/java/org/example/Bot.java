@@ -9,7 +9,7 @@ public class Bot {
     private MovementStrategy strategy;
     private final Player player;
     private Location botLocation;
-    private boolean hasFlag;
+    private boolean hasFlag = false;
 
 
     public Bot(MovementStrategy strategy, Player player, Location botLocation) {

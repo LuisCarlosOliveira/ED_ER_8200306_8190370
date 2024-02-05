@@ -1,8 +1,9 @@
 package org.example;
 
+import org.example.MovementStrategy.MinimumSpanningTreeStrategy;
 import org.example.MovementStrategy.MovementStrategy;
+import org.example.MovementStrategy.RandomMovementStrategy;
 import org.example.MovementStrategy.ShortestPathStrategy;
-import org.example.Structures.Implementations.ArrayUnorderedList;
 import org.example.Structures.Implementations.LinkedQueue;
 
 import java.io.File;
@@ -34,8 +35,11 @@ public class Game {
         endGame();
     }
 
+    /*
+    MISSSING :
+    LEITURA DE FICHEIRO
+     */
     private void setupGame() {
-        String file = "test";
         Scanner scanner = new Scanner(System.in);
         System.out.println("Do you want to create a new map (1) or import an existing one (2)?");
         int choice = scanner.nextInt();
@@ -43,7 +47,9 @@ public class Game {
         if (choice == 1) {
             createNewMap();
         } else if (choice == 2) {
-            this.gameMap.importMap(file);
+            System.out.println("Please enter the file name to import the map:");
+            String fileName = scanner.next();
+            this.gameMap.importMap(fileName);
         } else {
             System.out.println("Invalid option. Exiting the game.");
             return;
@@ -136,21 +142,25 @@ public class Game {
     }
 
     private MovementStrategy selectStrategy() {
+        Location player1Flag = gameMap.getPlayerOneFlagLocation();
+        Location player2Flag = gameMap.getPlayerTwoFlagLocation();
         Scanner scanner = new Scanner(System.in);
         System.out.println("1. Shortest Path Strategy moving towards enemy flag");
-        System.out.println("2. Shortest Path Strategy moving towards own flag");
+        System.out.println("2. Minimum Spanning Tree Strategy moving towards enemy flag");
+        System.out.println("3. Random Movement Strategy");
         // Add more strategies as needed
         int choice = scanner.nextInt();
 
         switch (choice) {
             case 1:
-                return new ShortestPathStrategy(true);
+                return new ShortestPathStrategy(); // Alvo será definido fora deste método
             case 2:
-                return new ShortestPathStrategy(false);
-            // Add more cases for additional strategies
+                return new MinimumSpanningTreeStrategy(); // Alvo será definido fora deste método
+            case 3:
+                return new RandomMovementStrategy();
             default:
-                System.out.println("Invalid choice, defaulting to Shortest Path Strategy moving towards enemy flag");
-                return new ShortestPathStrategy(true);
+                System.out.println("Invalid choice, defaulting to Random Movement Strategy");
+                return new RandomMovementStrategy();
         }
     }
 
