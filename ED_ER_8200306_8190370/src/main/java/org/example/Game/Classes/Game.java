@@ -166,11 +166,11 @@ public class Game {
         int player2Bots = getInputAsInt("Enter the number of bots for " + player2.getName() + ": ");
 
         for (int i = 0; i < player1Bots; i++) {
-            IMovementStrategy strategy = selectStrategy();
+            IMovementStrategy strategy = selectStrategy(player1);
             createAndAddBot(this.player1, strategy);
         }
         for (int i = 0; i < player2Bots; i++) {
-            IMovementStrategy strategy = selectStrategy();
+            IMovementStrategy strategy = selectStrategy(player2);
             createAndAddBot(this.player2, strategy);
         }
     }
@@ -180,10 +180,9 @@ public class Game {
      *
      * @return The selected movement strategy.
      */
-    private IMovementStrategy selectStrategy() {
-        ILocation player1Flag = gameMap.getPlayerOneFlagLocation();
-        ILocation player2Flag = gameMap.getPlayerTwoFlagLocation();
+    private IMovementStrategy selectStrategy(IPlayer player) {
         Scanner scanner = new Scanner(System.in);
+        System.out.println("\n" + player.getName() + " chose your bot strategy: ");
         System.out.println("1. Shortest Path Strategy moving towards enemy flag");
         System.out.println("2. Minimum Spanning Tree Strategy moving towards enemy flag");
         System.out.println("3. Random Movement Strategy");
