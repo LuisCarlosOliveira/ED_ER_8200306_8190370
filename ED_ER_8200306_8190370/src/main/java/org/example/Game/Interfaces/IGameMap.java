@@ -52,6 +52,8 @@ public interface IGameMap {
      */
     ILocation  getPlayerTwoFlagLocation ();
 
+    void setFlags(IFlag playerOneFlag, IFlag playerTwoFlag);
+
     /**
      * Provides a string representation of the game map.
      *

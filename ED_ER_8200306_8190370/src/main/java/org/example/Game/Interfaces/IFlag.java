@@ -12,21 +12,21 @@ public interface IFlag {
      *
      * @return The player who owns the flag.
      */
-    Player getOwner();
+    IPlayer getOwner();
 
     /**
      * Gets the current location of the flag.
      *
      * @return The current location of the flag.
      */
-    Location getCurrentLocation();
+    ILocation getCurrentLocation();
 
     /**
      * Sets the current location of the flag.
      *
      * @param location The new location for the flag.
      */
-    void setCurrentLocation(Location location);
+    void setCurrentLocation(ILocation location);
 
     /**
      * Checks if the flag is captured.

@@ -1,13 +1,15 @@
 package org.example.Game.Classes;
 
 import org.example.Game.Interfaces.IFlag;
+import org.example.Game.Interfaces.ILocation;
+import org.example.Game.Interfaces.IPlayer;
 
 /**
  * Represents a flag in the game that players can capture and defend.
  */
 public class Flag implements IFlag {
-    private Player owner;
-    private Location currentLocation;
+    private IPlayer owner;
+    private ILocation currentLocation;
     private boolean isCaptured;
 
     /**
@@ -16,7 +18,7 @@ public class Flag implements IFlag {
      * @param owner            The player who owns the flag.
      * @param startingLocation The initial location of the flag.
      */
-    public Flag(Player owner, Location startingLocation) {
+    public Flag(IPlayer owner, ILocation startingLocation) {
         this.owner = owner;
         this.currentLocation = startingLocation;
         this.isCaptured = false;
@@ -27,7 +29,7 @@ public class Flag implements IFlag {
      *
      * @return The player who owns the flag.
      */
-    public Player getOwner() {
+    public IPlayer getOwner() {
         return owner;
     }
 
@@ -36,7 +38,7 @@ public class Flag implements IFlag {
      *
      * @return The current location of the flag.
      */
-    public Location getCurrentLocation() {
+    public ILocation getCurrentLocation() {
         return currentLocation;
     }
 
@@ -45,7 +47,7 @@ public class Flag implements IFlag {
      *
      * @param location The new location to set for the flag.
      */
-    public void setCurrentLocation(Location location) {
+    public void setCurrentLocation(ILocation location) {
         this.currentLocation = location;
     }
 

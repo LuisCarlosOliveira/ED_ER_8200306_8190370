@@ -1,16 +1,14 @@
 package org.example;
 
-
+import org.example.Game.Classes.Game;
 import org.example.Game.Classes.GameMap;
 
 public class Main {
     public static void main(String[] args) {
-        /*
+
         Game game = new Game();
         game.startGame();
         System.out.println(game);
-        System.out.println(game.getBots().toString());
-        */
 
         // Step 1: Create and populate a GameMap
         GameMap originalMap = new GameMap();

@@ -1,14 +1,12 @@
 package org.example.Game.Classes;
 
-import org.example.Game.Interfaces.IBot;
-import org.example.Game.Interfaces.ILocation;
-import org.example.Game.Interfaces.IMovementStrategy;
-import org.example.Game.Interfaces.IPlayer;
+import org.example.Game.Interfaces.*;
 import org.example.Game.MovementStrategy.MinimumSpanningTreeStrategy;
 import org.example.Game.MovementStrategy.RandomMovementStrategy;
 import org.example.Game.MovementStrategy.ShortestPathStrategy;
 import org.example.Structures.Implementations.LinkedQueue;
 
+import java.util.Locale;
 import java.util.Scanner;
 
 /**
@@ -71,6 +69,9 @@ public class Game {
 
         player1.selectBase(gameMap, player2);
         player2.selectBase(gameMap, player1);
+        IFlag player1Flag = new Flag(player1, player1.getBase());
+        IFlag player2Flag = new Flag(player2, player2.getBase());
+        this.gameMap.setFlags(player1Flag, player2Flag);
 
         System.out.println("\n" + player1);
         System.out.println(player2);
@@ -239,10 +240,10 @@ public class Game {
 
     // Helper method to safely read a double input
     private double getInputAsDouble(String message) {
-        Scanner scanner = new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in).useLocale(Locale.US);
         System.out.print(message);
         while (!scanner.hasNextDouble()) {
-            scanner.next(); // Read and discard non-double input
+            scanner.next(); // Lê e descarta a entrada não válida
             System.out.print("Invalid input. Please enter a valid number: ");
         }
         return scanner.nextDouble();
