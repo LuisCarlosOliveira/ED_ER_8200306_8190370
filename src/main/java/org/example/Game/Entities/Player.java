@@ -72,7 +72,6 @@ public class Player implements IPlayer {
      *
      * @param gameMap the game map from which the player selects the base
      */
-
     @Override
     public void selectBase(IGameMap gameMap) {
         Scanner scanner = new Scanner(System.in);
@@ -84,22 +83,28 @@ public class Player implements IPlayer {
             System.out.println(gameMap.getLocations().vertexToString());
 
             System.out.print("Enter the number of the desired location: ");
-            int selectedLocationIndex = scanner.nextInt();
+            String input = scanner.nextLine();
 
-            if (selectedLocationIndex >= 1 && selectedLocationIndex <= gameMap.getLocations().size()) {
-                ILocation selectedLocation = gameMap.getLocations().getVertex(selectedLocationIndex - 1);
+            // Verificar se a entrada é um número
+            if (input.matches("\\d+")) {
+                int selectedLocationIndex = Integer.parseInt(input);
 
-                // No check for location availability, assuming it's either ensured elsewhere or not required
-                System.out.println("Base of player " + this.name + " selected at: " + selectedLocation);
-                this.setFlagBase(new Flag(this, selectedLocation));
-                baseSelected = true;
+                if (selectedLocationIndex >= 1 && selectedLocationIndex <= gameMap.getLocations().size()) {
+                    ILocation selectedLocation = gameMap.getLocations().getVertex(selectedLocationIndex - 1);
 
+                    // No check for location availability, assuming it's either ensured elsewhere or not required
+                    System.out.println("Base of player " + this.name + " selected at: " + selectedLocation);
+                    this.setFlagBase(new Flag(this, selectedLocation));
+                    baseSelected = true;
+
+                } else {
+                    System.out.println("Invalid location number. Try again.");
+                }
             } else {
-                System.out.println("Invalid location number. Try again.");
+                System.out.println("Invalid input. Please enter a valid number.");
             }
         }
     }
-
 
     /**
      * Returns a string representation of the player.
