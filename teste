@@ -1,0 +1,5 @@
+Location  - (44, 67) -> Location  - (0, 61) Location  - (95, 65) Location  - (10, 92) Location  - (66, 12) 
+Location  - (0, 61) -> Location  - (44, 67) Location  - (95, 65) Location  - (10, 92) Location  - (66, 12) 
+Location  - (95, 65) -> Location  - (44, 67) Location  - (0, 61) Location  - (10, 92) Location  - (66, 12) 
+Location  - (10, 92) -> Location  - (44, 67) Location  - (0, 61) Location  - (95, 65) Location  - (66, 12) 
+Location  - (66, 12) -> Location  - (44, 67) Location  - (0, 61) Location  - (95, 65) Location  - (10, 92) 
