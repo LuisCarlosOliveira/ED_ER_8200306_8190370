@@ -4,7 +4,6 @@ import org.example.Game.Entities.Interfaces.IFlag;
 import org.example.Game.Entities.Interfaces.ILocation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import java.io.IOException;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class GameMapTest {
@@ -25,10 +24,10 @@ public class GameMapTest {
 
     @Test
     void testSetAndGetFlags() {
-        IFlag flag1 = new Flag(null, null); // Coloque os parâmetros apropriados se necessário
-        IFlag flag2 = new Flag(null, null); // Coloque os parâmetros apropriados se necessário
-        ILocation location1 = new Location(1, 1); // Coloque as coordenadas apropriadas se necessário
-        ILocation location2 = new Location(2, 2); // Coloque as coordenadas apropriadas se necessário
+        IFlag flag1 = new Flag(null, null);
+        IFlag flag2 = new Flag(null, null);
+        ILocation location1 = new Location(1, 1);
+        ILocation location2 = new Location(2, 2);
 
         GameMap gameMap = new GameMap();
 
@@ -37,7 +36,7 @@ public class GameMapTest {
         flag1.setCurrentLocation(location1);
         flag2.setCurrentLocation(location2);
 
-        assertEquals(location1, gameMap.getPlayerOneFlagLocation(), "A localização da bandeira do jogador um deve corresponder à localização definida");
-        assertEquals(location2, gameMap.getPlayerTwoFlagLocation(), "A localização da bandeira do jogador dois deve corresponder à localização definida");
+        assertEquals(location1, gameMap.getPlayerOneFlagLocation(), "Player one flag location should match the defined location");
+        assertEquals(location2, gameMap.getPlayerTwoFlagLocation(), "Player two flag location should match the defined location");
     }
 }
