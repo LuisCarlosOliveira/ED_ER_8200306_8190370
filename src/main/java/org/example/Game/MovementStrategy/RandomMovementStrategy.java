@@ -16,20 +16,33 @@ import java.util.Random;
  */
 public class RandomMovementStrategy extends MovementStrategy implements IRandomMovementStrategy {
 
+    /** A random number generator for selecting the next move. */
     private final Random random = new Random();
 
+    /**
+     * Determines the next move for the bot based on the current game map and bot location.
+     *
+     * @param bot The bot for which to determine the next move.
+     * @param gameMap The game map containing the current state of the game.
+     * @return The next location where the bot should move.
+     */
     @Override
     public ILocation nextMove(IBot bot, IGameMap gameMap) {
+        // Retrieve the graph representing the game map
         FlagGameWGraph<ILocation> graph = ((GameMap) gameMap).getLocations();
 
+        // Get the current location of the bot
         ILocation currentLocation = bot.getBotLocation();
+
+        // Get the list of neighboring locations that the bot can move to
         ArrayUnorderedList<ILocation> neighbors = graph.getNeighbors(currentLocation);
 
+        // If there are no neighbors, stay in the same location
         if (neighbors.isEmpty()) {
-            // Stay in the same location if there are no neighbors
             return currentLocation;
         }
 
+        // Choose a random neighbor as the next location to move to
         int nextIndex = random.nextInt(neighbors.size());
         ILocation nextLocation = neighbors.get(nextIndex);
 
