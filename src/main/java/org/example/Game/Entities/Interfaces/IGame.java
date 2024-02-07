@@ -1,20 +1,35 @@
 package org.example.Game.Entities.Interfaces;
 
+import java.io.IOException;
+
 /**
  * Represents the interface for managing and controlling the game.
  */
 public interface IGame {
 
     /**
-     * Starts the game, including setting up the map, player bases, and bots.
+     * Starts the game.
+     *
+     * @throws IOException if an I/O error occurs.
      */
-    void startGame();
+    void startGame() throws IOException;
 
     /**
-     * Converts the game map, players, and bots into a string representation.
-     *
-     * @return A string representation of the game.
+     * Prints the game map.
      */
-    @Override
-    String toString();
+    void printMap();
+
+    /**
+     * Sets bots for players.
+     */
+    void setBotsForPlayers();
+
+    /**
+     * Plays the game.
+     *
+     * @throws IOException if an I/O error occurs.
+     */
+    void playGame() throws IOException;
 }
+
+

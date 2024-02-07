@@ -6,6 +6,7 @@ import org.example.Game.Entities.Interfaces.IBot;
 import org.example.Game.Entities.Interfaces.IGameMap;
 import org.example.Game.Entities.Interfaces.ILocation;
 import org.example.Game.MovementStrategy.Interfaces.IMovementStrategy;
+import org.example.Game.MovementStrategy.Interfaces.IRandomMovementStrategy;
 import org.example.Structures.Implementations.ArrayUnorderedList;
 
 import java.util.Random;
@@ -13,7 +14,7 @@ import java.util.Random;
 /**
  * Movement strategy that selects the next bot move randomly from accessible locations on the game map.
  */
-public class RandomMovementStrategy implements IMovementStrategy {
+public class RandomMovementStrategy extends MovementStrategy implements IRandomMovementStrategy {
 
     private final Random random = new Random();
 

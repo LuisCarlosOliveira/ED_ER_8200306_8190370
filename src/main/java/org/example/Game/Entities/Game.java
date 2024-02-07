@@ -7,12 +7,13 @@ import org.example.Game.MovementStrategy.RandomMovementStrategy;
 import org.example.Game.MovementStrategy.ShortestPathStrategy;
 import org.example.Structures.Implementations.LinkedQueue;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 /**
  * Represents the main class for managing and controlling the game.
  */
-public class Game {
+public class Game implements IGame{
     private IGameMap gameMap;
     private IPlayer player1;
     private IPlayer player2;
@@ -34,7 +35,7 @@ public class Game {
     /**
      * Starts the game, including setting up the map, player bases, and bots.
      */
-    public void startGame() {
+    public void startGame() throws IOException {
         setupGame();
         while (!isGameOver) {
             processBotTurns();
@@ -47,7 +48,7 @@ public class Game {
      * Sets up the initial state of the game, including creating a new map or importing an existing one.
      * Also, allows players to select bases and initializes bots for both players.
      */
-    private void setupGame() {
+    private void setupGame() throws IOException {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Do you want to create a new map (1) or import an existing one (2)?");
         int choice = scanner.nextInt();
@@ -56,6 +57,7 @@ public class Game {
             createNewMap();
         } else if (choice == 2) {
             System.out.println("Please enter the file name to import the map:");
+            scanner.nextLine();
             String fileName = scanner.next();
             this.gameMap.importMap(fileName);
         } else {
@@ -98,6 +100,9 @@ public class Game {
         }
     }
 
+    /**
+     * Prints the current state of the game map.
+     */
     public void printMap() {
         int minX = Integer.MAX_VALUE, maxX = Integer.MIN_VALUE;
         int minY = Integer.MAX_VALUE, maxY = Integer.MIN_VALUE;
@@ -109,32 +114,66 @@ public class Game {
             maxY = Math.max(maxY, location.getCoordinateY());
         }
 
-        int width = maxX - minX + 1;
-        int height = maxY - minY + 1;
-
-        char[][] grid = new char[height][width];
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                grid[i][j] = '.';
+        char[][] grid = new char[maxY - minY + 1][maxX - minX + 1];
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[i].length; j++) {
+                grid[i][j] = '.'; // Fill the grid with dots for empty spaces
             }
         }
 
-        for (ILocation location : gameMap.getLocations().getAllVertices()) {
-            int x = location.getCoordinateX() - minX;
-            int y = location.getCoordinateY() - minY;
-            grid[y][x] = 'L';
+        markLocationOnGrid(grid, player1.getBase(), "B1", minX, minY);
+        markLocationOnGrid(grid, player2.getBase(), "B2", minX, minY);
+        markLocationOnGrid(grid, gameMap.getPlayerOneFlagLocation(), "F1", minX, minY);
+        markLocationOnGrid(grid, gameMap.getPlayerTwoFlagLocation(), "F2", minX, minY);
+
+        for (IBot bot : bots) {
+            String botMarker = bot.getPlayer() == player1 ? "P1B" + bot.getId() : "P2B" + bot.getId();
+            markBotOnGrid(grid, bot.getBotLocation(), botMarker, minX, minY);
         }
 
         System.out.println("\nGame Map Overview:");
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                System.out.print(grid[i][j] + " ");
+        for (char[] row : grid) {
+            for (char cell : row) {
+                System.out.print(cell + " ");
             }
             System.out.println();
         }
         System.out.println();
     }
 
+    /**
+     * Marks specific locations on the grid, such as bases and flags.
+     *
+     * @param grid The game map grid.
+     * @param location The location to mark.
+     * @param marker The marker symbol for the location.
+     * @param minX The minimum X coordinate on the grid.
+     * @param minY The minimum Y coordinate on the grid.
+     */
+    private void markLocationOnGrid(char[][] grid, ILocation location, String marker, int minX, int minY) {
+        int x = location.getCoordinateX() - minX;
+        int y = location.getCoordinateY() - minY;
+        for (int i = 0; i < marker.length() && i + x < grid[y].length; i++) {
+            grid[y][x + i] = marker.charAt(i);
+        }
+    }
+
+    /**
+     * Marks bots on the grid.
+     *
+     * @param grid The game map grid.
+     * @param location The bot's location.
+     * @param marker The marker symbol for the bot.
+     * @param minX The minimum X coordinate on the grid.
+     * @param minY The minimum Y coordinate on the grid.
+     */
+    private void markBotOnGrid(char[][] grid, ILocation location, String marker, int minX, int minY) {
+        int x = location.getCoordinateX() - minX;
+        int y = location.getCoordinateY() - minY;
+        for (int i = 0; i < marker.length() && i + x < grid[y].length; i++) {
+            grid[y][x + i] = marker.charAt(i);
+        }
+    }
 
     /**
      * Executes the turn for a specific bot, including updating its location and checking for flag captures.
@@ -145,7 +184,6 @@ public class Game {
         ILocation nextLocation = bot.getStrategy().nextMove(bot, gameMap);
         bot.setBotLocation(nextLocation);
 
-        // Check for opponent bots with flags at the next location
         for (IBot otherBot : bots) {
             if (!otherBot.equals(bot) && otherBot.getBotLocation().equals(nextLocation)) {
                 if (otherBot.hasFlag() && !otherBot.getPlayer().equals(bot.getPlayer())) {
@@ -155,7 +193,6 @@ public class Game {
                 }
             }
         }
-        // Check if the bot captured the enemy flag
         if (!bot.hasFlag() && isFlagAvailableForCapture(nextLocation, bot.getPlayer())) {
             if (nextLocation.equals(gameMap.getPlayerOneFlagLocation()) && !player1.equals(bot.getPlayer())) {
                 bot.setHasFlag(true);
@@ -169,6 +206,13 @@ public class Game {
         System.out.println("Bot " + bot.getId() + " (" + bot.getPlayer().getName() + ") moved to " + nextLocation);
     }
 
+    /**
+     * Determines if a flag is available for capture at a given location by a specified player.
+     *
+     * @param flagLocation The location to check for flag availability.
+     * @param player The player attempting to capture the flag.
+     * @return {@code true} if the flag is available for capture; {@code false} otherwise.
+     */
     private boolean isFlagAvailableForCapture(ILocation flagLocation, IPlayer player) {
         for (IBot bot : bots) {
             if (bot.getPlayer().equals(player) && bot.hasFlag() && bot.getBotLocation().equals(flagLocation)) {
@@ -177,17 +221,18 @@ public class Game {
         }
         return true;
     }
-
+    /**
+     * Resets a flag to its owner's base location.
+     *
+     * @param flag The flag to be reset.checkGameConditions
+     */
     private void resetFlagToBase(IFlag flag) {
         flag.setCurrentLocation(flag.getOwner().getBase());
         System.out.println("The flag of " + flag.getOwner().getName() + " has been returned to the base.");
     }
 
-
-
-
     /**
-     * Checks the game conditions, including flag captures and determining the winner.
+     * Checks the game conditions to determine if a player has won by returning the flag to their base.
      */
     private void checkGameConditions() {
         for (IBot bot : this.player1.getBots()) {
@@ -199,6 +244,7 @@ public class Game {
                 return;
             }
         }
+
         if (!isGameOver) {
             for (IBot bot : player2.getBots()) {
                 if (bot.hasFlag() && bot.getBotLocation().equals(player2.getBase())) {
@@ -212,10 +258,8 @@ public class Game {
         }
     }
 
-
-
     /**
-     * Ends the game and displays the winner or declares a tie.
+     * Ends the game and announces the winner.
      */
     private void endGame() {
         if (this.winner != null) {
@@ -227,22 +271,19 @@ public class Game {
 
     /**
      * Creates a new map for the game based on user input.
+     * @throws IOException If an input or output exception occurred.
      */
-    private void createNewMap() {
+    private void createNewMap() throws IOException {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Creating a new map...");
         int quantityLocations = getInputAsInt("Enter the number of locations: ");
         boolean bidirectional = getInputAsBoolean("Should the map be bidirectional? (true/false): ");
-        double densityEdges = getInputAsDouble("Enter the density of edges (between 0 and 1): ");
+        double densityEdges = getInputAsDouble("Enter the density of edges", 0.0, 1.0);
 
-        // Gera o mapa com os parâmetros fornecidos
         this.gameMap.generateRandomMap(quantityLocations, bidirectional, densityEdges);
 
-        // Pergunta ao usuário se ele deseja exportar o mapa
         System.out.println("Do you want to export the map? (yes/no)");
         String exportAnswer = scanner.next().trim().toLowerCase();
-
-        // Se a resposta for 'yes', pede o nome do arquivo e exporta o mapa
         if ("yes".equals(exportAnswer)) {
             System.out.println("Please enter the file name for exporting the map:");
             String fileName = scanner.next();
@@ -250,7 +291,6 @@ public class Game {
             System.out.println("Map exported successfully to " + fileName);
         }
     }
-
 
     /**
      * Sets up the specified number of bots for each player, allowing them to choose movement strategies.
@@ -273,12 +313,9 @@ public class Game {
 
     /**
      * Allows the user to select a movement strategy for a bot.
-     *
      * @return The selected movement strategy.
      */
     private IMovementStrategy selectStrategy() {
-        ILocation player1Flag = gameMap.getPlayerOneFlagLocation();
-        ILocation player2Flag = gameMap.getPlayerTwoFlagLocation();
         Scanner scanner = new Scanner(System.in);
         while (true) {
             System.out.println("1. Shortest Path Strategy moving towards enemy flag");
@@ -286,7 +323,6 @@ public class Game {
             System.out.println("3. Random Movement Strategy");
 
             int choice = scanner.nextInt();
-
             switch (choice) {
                 case 1:
                     return new ShortestPathStrategy();
@@ -299,7 +335,6 @@ public class Game {
             }
         }
     }
-
 
     /**
      * Creates a new bot with the specified movement strategy and adds it to the specified player.
@@ -314,7 +349,13 @@ public class Game {
     }
 
 
-    // Helper method to safely read an integer input
+    /**
+     * Reads an integer input safely from the console with a prompt message.
+     * Re-prompts the user until a valid integer is entered.
+     *
+     * @param message The prompt message to display to the user.
+     * @return The integer entered by the user.
+     */
     private int getInputAsInt(String message) {
         Scanner scanner = new Scanner(System.in);
         System.out.print(message);
@@ -325,7 +366,13 @@ public class Game {
         return scanner.nextInt();
     }
 
-    // Helper method to safely read a boolean input
+    /**
+     * Reads a boolean input safely from the console with a prompt message.
+     * Re-prompts the user until a valid boolean ('true' or 'false') is entered.
+     *
+     * @param message The prompt message to display to the user.
+     * @return The boolean value entered by the user.
+     */
     private boolean getInputAsBoolean(String message) {
         Scanner scanner = new Scanner(System.in);
         System.out.print(message);
@@ -336,18 +383,39 @@ public class Game {
         return scanner.nextBoolean();
     }
 
-    // Helper method to safely read a double input
-    private double getInputAsDouble(String message) {
+    /**
+     * Reads a double input safely from the console within a specified range, inclusive of min and max.
+     * Re-prompts the user until a valid number within the range is entered.
+     *
+     * @param message The prompt message to display to the user.
+     * @param min The minimum value allowed (inclusive).
+     * @param max The maximum value allowed (inclusive).
+     * @return The double value entered by the user within the specified range.
+     */
+    private double getInputAsDouble(String message, double min, double max) {
         Scanner scanner = new Scanner(System.in);
-        System.out.print(message);
-        while (!scanner.hasNextDouble()) {
-            scanner.next(); // Read and discard non-double input
-            System.out.print("Invalid input. Please enter a valid number: ");
-        }
-        return scanner.nextDouble();
+        double input;
+        do {
+            System.out.print(message + " (value must be > " + min + " and <= " + max + ") : ");
+            while (!scanner.hasNextDouble()) {
+                System.out.println("Invalid input. Please enter a valid number, using comma instead of period.");
+                scanner.next(); // Read and discard non-double input
+                System.out.print(message + " (value must be > " + min + " and <= " + max + "): ");
+            }
+            input = scanner.nextDouble();
+            if (input <= min || input > max) {
+                System.out.println("Invalid range. The number must be > " + min + " and <= " + max + ". Please try again.");
+            }
+        } while (input <= min || input > max);
+        return input;
     }
 
-    public void playGame() {
+    /**
+     * Main gameplay loop. Allows the user to play the game and choose to play again after each game ends.
+     *
+     * @throws IOException If an I/O error occurs during the game.
+     */
+    public void playGame() throws IOException {
         Scanner scanner = new Scanner(System.in);
         boolean playAgain = true;
 
@@ -356,7 +424,7 @@ public class Game {
             System.out.println("Do you want to play again? (yes/no)");
             String answer = scanner.nextLine().trim().toLowerCase();
 
-            if (!answer.equals("yes")) {
+            if (!"yes".equals(answer)) {
                 playAgain = false;
                 System.out.println("Thank you for playing!");
             } else {
@@ -365,6 +433,9 @@ public class Game {
         }
     }
 
+    /**
+     * Resets the game to its initial state, preparing for a new game.
+     */
     private void resetGame() {
         this.gameMap = new GameMap();
         this.player1 = new Player("Player 1");
@@ -373,9 +444,6 @@ public class Game {
         this.isGameOver = false;
         this.winner = null;
     }
-
-
-
     /**
      * Converts the game map, players, and bots into a string representation.
      *

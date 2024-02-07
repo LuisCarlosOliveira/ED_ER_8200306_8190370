@@ -9,9 +9,9 @@ import org.example.Structures.Implementations.ArrayUnorderedList;
 import java.io.*;
 import java.util.Random;
 
+
 /**
- * Class that represents the map for the Capture the Flag game.
- * The map is composed of locations and paths between them, represented by a flagGameWGraph.
+ * Represents the map for the Capture the Flag game, composed of locations and paths.
  */
 public class GameMap implements IGameMap {
     private final FlagGameWGraph<ILocation> locations;
@@ -19,76 +19,65 @@ public class GameMap implements IGameMap {
     private IFlag playerTwoFlag;
 
     /**
-     * Constructs a new GameMap instance.
+     * Constructs a new GameMap instance with no locations or paths.
      */
     public GameMap() {
         this.locations = new FlagGameWGraph<>();
     }
 
     /**
-     * Gets the FlagGameWGraph of locations that constitute the game map.
+     * Returns the graph of locations that constitute the game map.
      *
-     * @return The FlagGameWGraph of locations.
+     * @return The graph of locations.
      */
     public FlagGameWGraph<ILocation> getLocations() {
         return locations;
     }
 
     /**
-     * Generates a random map based on the provided parameters.
+     * Validates the parameters for map generation.
      *
-     * @param quantityLocations Number of locations on the map.
-     * @param bidirectional     If the paths are bidirectional.
-     * @param densityEdges      Edge density in the graph.
-     * @return The same instance of GameMap after the map creation.
+     * @param quantityLocations The number of locations to generate.
+     * @param densityEdges      The density of paths between locations.
+     * @throws IllegalArgumentException If the parameters are not valid.
+     */
+    private void validateMapParameters(int quantityLocations, double densityEdges) {
+        if (quantityLocations < 1) {
+            throw new IllegalArgumentException("Quantity of locations must be at least 1.");
+        }
+        if (densityEdges < 0 || densityEdges > 1) {
+            throw new IllegalArgumentException("Edge density must be between 0 and 1.");
+        }
+    }
+
+    /**
+     * Generates a random map based on the specified parameters.
+     *
+     * @param quantityLocations The number of locations to generate.
+     * @param bidirectional     Indicates if the paths are bidirectional.
+     * @param densityEdges      The density of paths between locations.
+     * @return The instance of this GameMap for method chaining.
      */
     public GameMap generateRandomMap(int quantityLocations, boolean bidirectional, double densityEdges) {
-        if (quantityLocations < 1 || densityEdges < 0 || densityEdges > 1) {
-            throw new IllegalArgumentException("Invalid parameters for map creation.");
-        }
+        validateMapParameters(quantityLocations, densityEdges);
 
         Random random = new Random();
-
-        // Temporary array to store the locations
         Location[] tempArray = new Location[quantityLocations];
 
-        // Create random locations and add them to the FlagGameWGraph and the temporary array
         for (int i = 0; i < quantityLocations; i++) {
-            int randomX = random.nextInt(100);
-            int randomY = random.nextInt(100);
-            Location newLocation = new Location(randomX, randomY);
+            Location newLocation = new Location(random.nextInt(100), random.nextInt(100));
             locations.addVertex(newLocation);
             tempArray[i] = newLocation;
         }
 
-        // Add edges between locations based on edge density
         for (int i = 0; i < quantityLocations; i++) {
-            Location location1 = tempArray[i];
-            boolean hasEdge = false;
-
             for (int j = 0; j < quantityLocations; j++) {
-                if (i == j) continue;
-                Location location2 = tempArray[j];
-
-                if (random.nextDouble() < densityEdges) {
-                    int randomDistance = random.nextInt(15) + 1;
-                    locations.addEdge(location1, location2, randomDistance);
-                    hasEdge = true;
-
+                if (i != j && random.nextDouble() < densityEdges) {
+                    int distance = random.nextInt(15) + 1;
+                    locations.addEdge(tempArray[i], tempArray[j], distance);
                     if (bidirectional) {
-                        locations.addEdge(location2, location1, randomDistance);
+                        locations.addEdge(tempArray[j], tempArray[i], distance);
                     }
-                }
-            }
-            // Ensure minimal connectivity if no edge was added for this location
-            if (!hasEdge) {
-                int j = (i + 1) % quantityLocations; // Choose a different location
-                Location location2 = tempArray[j];
-                int randomDistance = random.nextInt(15) + 1;
-                locations.addEdge(location1, location2, randomDistance);
-
-                if (bidirectional) {
-                    locations.addEdge(location2, location1, randomDistance);
                 }
             }
         }
@@ -97,33 +86,28 @@ public class GameMap implements IGameMap {
     }
 
     /**
-     * Exports the current map to a file.
+     * Exports the current game map to a file.
      *
-     * @param fileName The file name  for export.
+     * @param fileName The name of the file to export the map to.
+     * @throws IOException If an I/O error occurs.
      */
-    public void exportMap(String fileName) {
-        String currentDir = System.getProperty("user.dir");
-        String fullPath = currentDir + File.separator + fileName;
+    public void exportMap(String fileName) throws IOException {
+        String fullPath = System.getProperty("user.dir") + File.separator + fileName;
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fullPath))) {
-            // Use the toString method to get the flagGameWGraph's string representation
-            String flagGameWGraphData = locations.toString();
-            // Write this string to the file
-            writer.write(flagGameWGraphData);
-        } catch (IOException e) {
-            e.printStackTrace();
+            writer.write(locations.toString());
         }
     }
 
     /**
-     * Imports a map from a file.
+     * Imports a game map from a specified file.
      *
-     * @param fileName The file name to import from.
+     * @param fileName The name of the file to import the map from.
+     * @throws IOException If an I/O error occurs.
      */
-    public void importMap(String fileName) {
+    public void importMap(String fileName) throws IOException {
         String filePath = System.getProperty("user.dir") + File.separator + fileName;
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))){
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
-
             while ((line = reader.readLine()) != null) {
                 line = line.trim();
                 if (line.isEmpty() || !line.contains("->")) continue;
@@ -131,7 +115,7 @@ public class GameMap implements IGameMap {
                 String[] parts = line.split("->");
                 String locationStr = parts[0].trim();
                 Location location = parseLocation(locationStr);
-                addUniqueVertex(location); // Adiciona o vértice se ele ainda não existir
+                addUniqueVertex(location);
 
                 if (parts.length > 1) {
                     String[] neighbors = parts[1].split("Location");
@@ -139,8 +123,8 @@ public class GameMap implements IGameMap {
                         neighborStr = neighborStr.trim();
                         if (neighborStr.isEmpty()) continue;
                         Location neighbor = parseLocation("Location " + neighborStr);
-                        addUniqueVertex(neighbor); // Garante que a localização vizinha também seja adicionada como vértice
-                        locations.addEdge(location, neighbor, calculateDistance(location, neighbor)); // Adiciona aresta com peso baseado na distância
+                        addUniqueVertex(neighbor);
+                        locations.addEdge(location, neighbor, calculateDistance(location, neighbor));
                     }
                 }
             }
@@ -151,21 +135,38 @@ public class GameMap implements IGameMap {
         }
     }
 
+    /**
+     * Adds a vertex to the locations graph if it is not already present.
+     *
+     * @param location The location to add as a vertex.
+     */
     private void addUniqueVertex(Location location) {
         if (!locations.containsVertex(location)) {
             locations.addVertex(location);
         }
     }
 
+    /**
+     * Parses a location from its string representation.
+     *
+     * @param locationStr The string representation of a location.
+     * @return The parsed Location object.
+     */
     private Location parseLocation(String locationStr) {
         String[] parts = locationStr.split(" - ")[1].replaceAll("[()]", "").split(", ");
         int x = Integer.parseInt(parts[0]);
         int y = Integer.parseInt(parts[1]);
-        return new Location(x, y); // Usa o construtor de Location com coordenadas x e y
+        return new Location(x, y);
     }
 
+    /**
+     * Calculates the Euclidean distance between two locations.
+     *
+     * @param loc1 The first location.
+     * @param loc2 The second location.
+     * @return The Euclidean distance between loc1 and loc2.
+     */
     private double calculateDistance(Location loc1, Location loc2) {
-        // Calcula a distância euclidiana entre duas localizações
         return Math.sqrt(Math.pow(loc1.getCoordinateX() - loc2.getCoordinateX(), 2) + Math.pow(loc1.getCoordinateY() - loc2.getCoordinateY(), 2));
     }
 
@@ -178,14 +179,14 @@ public class GameMap implements IGameMap {
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder();
-        ArrayUnorderedList<ILocation> vertices = locations.getAllVertices(); // Supondo que você tenha esse método
+        ArrayUnorderedList<ILocation> vertices = locations.getAllVertices();
         for (int i = 0; i < vertices.size(); i++) {
-            ILocation location = vertices.get(i); // Supondo que você tenha um método get() na sua lista
+            ILocation location = vertices.get(i);
             result.append("Loc ").append(i + 1).append(": (").append(location.getCoordinateX()).append(", ").append(location.getCoordinateY()).append(")\n");
-            ArrayUnorderedList<ILocation> neighbors = locations.getNeighbors(location); // Supondo que você tenha esse método
+            ArrayUnorderedList<ILocation> neighbors = locations.getNeighbors(location);
             for (int j = 0; j < neighbors.size(); j++) {
                 ILocation neighbor = neighbors.get(j);
-                result.append(" -> Conecta a Loc ").append(vertices.indexOf(neighbor) + 1).append("\n"); // Supondo que você tenha um método indexOf() na sua lista
+                result.append(" -> Connect to Loc ").append(vertices.indexOf(neighbor) + 1).append("\n");
             }
         }
         return result.toString();
@@ -193,10 +194,10 @@ public class GameMap implements IGameMap {
 
 
     /**
-     * Sets the flags for both players on the map.
+     * Sets the flags for player one and player two on the map.
      *
-     * @param playerOneFlag The flag for player one.
-     * @param playerTwoFlag The flag for player two.
+     * @param playerOneFlag Flag for player one.
+     * @param playerTwoFlag Flag for player two.
      */
     public void setFlags(IFlag playerOneFlag, IFlag playerTwoFlag) {
         this.playerOneFlag = playerOneFlag;
@@ -204,20 +205,20 @@ public class GameMap implements IGameMap {
     }
 
     /**
-     * Retrieves the location of player one's flag on the map.
+     * Retrieves the location of player one's flag.
      *
      * @return The location of player one's flag.
      */
-    public ILocation getPlayerOneFlagLocation () {
+    public ILocation getPlayerOneFlagLocation() {
         return playerOneFlag.getCurrentLocation();
     }
 
     /**
-     * Retrieves the location of player two's flag on the map.
+     * Retrieves the location of player two's flag.
      *
      * @return The location of player two's flag.
      */
-    public ILocation  getPlayerTwoFlagLocation () {
+    public ILocation getPlayerTwoFlagLocation() {
         return playerTwoFlag.getCurrentLocation();
     }
 

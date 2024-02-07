@@ -2,6 +2,8 @@ package org.example.Game.Entities.Interfaces;
 
 import org.example.Game.Entities.FlagGameWGraph;
 
+import java.io.IOException;
+
 /**
  * Represents the interface for a game map in the context of the game.
  */
@@ -22,14 +24,14 @@ public interface IGameMap {
      *
      * @param pathFile Path to the file for exporting the map.
      */
-    void exportMap(String pathFile);
+    void exportMap(String pathFile) throws IOException;
 
     /**
      * Imports a map from a file.
      *
      * @param filePath Path to the file from which to import the map.
      */
-    void importMap(String filePath);
+    void importMap(String filePath) throws IOException;
 
     /**
      * Retrieves the network of locations that constitute the game map.

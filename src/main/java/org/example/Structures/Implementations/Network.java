@@ -124,6 +124,7 @@ public class Network<T> extends Graph<T> implements NetworkADT<T> {
     public void addEdge(int index1, int index2, double weight) {
         if (indexIsValid(index1) && indexIsValid(index2)) {
             networkAdjMatrix[index1][index2] = weight;
+            networkAdjMatrix[index2][index1] = weight;
         }
     }
 
