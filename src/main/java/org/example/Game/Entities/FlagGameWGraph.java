@@ -1,4 +1,4 @@
-package org.example.Game.Classes;
+package org.example.Game.Entities;
 
 import org.example.Structures.Implementations.ArrayUnorderedList;
 import org.example.Structures.Implementations.Graph;

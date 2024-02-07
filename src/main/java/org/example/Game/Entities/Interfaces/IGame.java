@@ -1,4 +1,4 @@
-package org.example.Game.Interfaces;
+package org.example.Game.Entities.Interfaces;
 
 /**
  * Represents the interface for managing and controlling the game.

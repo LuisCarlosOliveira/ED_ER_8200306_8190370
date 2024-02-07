@@ -1,7 +1,7 @@
-package org.example.Game.Classes;
+package org.example.Game.Entities;
 
-import org.example.Game.Interfaces.*;
-//import org.example.Game.MovementStrategy.MinimumSpanningTreeStrategy;
+import org.example.Game.Entities.Interfaces.*;
+import org.example.Game.MovementStrategy.Interfaces.IMovementStrategy;
 import org.example.Game.MovementStrategy.MinimumSpanningTreeStrategy;
 import org.example.Game.MovementStrategy.RandomMovementStrategy;
 import org.example.Game.MovementStrategy.ShortestPathStrategy;
@@ -43,10 +43,6 @@ public class Game {
         endGame();
     }
 
-    /*
-    MISSSING :
-    LEITURA DE FICHEIRO
-     */
     /**
      * Sets up the initial state of the game, including creating a new map or importing an existing one.
      * Also, allows players to select bases and initializes bots for both players.
@@ -96,10 +92,49 @@ public class Game {
             }
             IBot currentBot = bots.dequeue();
             executeBotTurn(currentBot);
+            printMap();
             this.bots.enqueue(currentBot);
             checkGameConditions();
         }
     }
+
+    public void printMap() {
+        int minX = Integer.MAX_VALUE, maxX = Integer.MIN_VALUE;
+        int minY = Integer.MAX_VALUE, maxY = Integer.MIN_VALUE;
+
+        for (ILocation location : gameMap.getLocations().getAllVertices()) {
+            minX = Math.min(minX, location.getCoordinateX());
+            maxX = Math.max(maxX, location.getCoordinateX());
+            minY = Math.min(minY, location.getCoordinateY());
+            maxY = Math.max(maxY, location.getCoordinateY());
+        }
+
+        int width = maxX - minX + 1;
+        int height = maxY - minY + 1;
+
+        char[][] grid = new char[height][width];
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                grid[i][j] = '.';
+            }
+        }
+
+        for (ILocation location : gameMap.getLocations().getAllVertices()) {
+            int x = location.getCoordinateX() - minX;
+            int y = location.getCoordinateY() - minY;
+            grid[y][x] = 'L';
+        }
+
+        System.out.println("\nGame Map Overview:");
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                System.out.print(grid[i][j] + " ");
+            }
+            System.out.println();
+        }
+        System.out.println();
+    }
+
 
     /**
      * Executes the turn for a specific bot, including updating its location and checking for flag captures.

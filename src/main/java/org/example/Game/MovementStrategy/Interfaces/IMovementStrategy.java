@@ -1,6 +1,8 @@
-package org.example.Game.Interfaces;
+package org.example.Game.MovementStrategy.Interfaces;
 
-import org.example.Game.Classes.Location;
+import org.example.Game.Entities.Interfaces.IBot;
+import org.example.Game.Entities.Interfaces.IGameMap;
+import org.example.Game.Entities.Interfaces.ILocation;
 
 /**
  * Interface representing a movement strategy for a bot in a game.

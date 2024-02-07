@@ -1,4 +1,6 @@
-package org.example.Game.Interfaces;
+package org.example.Game.Entities.Interfaces;
+
+import org.example.Game.MovementStrategy.Interfaces.IMovementStrategy;
 
 /**
  * Represents the interface for a bot in the game.

@@ -1,9 +1,10 @@
-package org.example.Game.Classes;
+package org.example.Game.Entities;
 
 
-import org.example.Game.Interfaces.IFlag;
-import org.example.Game.Interfaces.IGameMap;
-import org.example.Game.Interfaces.ILocation;
+import org.example.Game.Entities.Interfaces.IFlag;
+import org.example.Game.Entities.Interfaces.IGameMap;
+import org.example.Game.Entities.Interfaces.ILocation;
+import org.example.Structures.Implementations.ArrayUnorderedList;
 
 import java.io.*;
 import java.util.Random;
@@ -176,10 +177,20 @@ public class GameMap implements IGameMap {
      */
     @Override
     public String toString() {
-        String result;
-        result = this.locations.toString();
+        StringBuilder result = new StringBuilder();
+        ArrayUnorderedList<ILocation> vertices = locations.getAllVertices(); // Supondo que você tenha esse método
+        for (int i = 0; i < vertices.size(); i++) {
+            ILocation location = vertices.get(i); // Supondo que você tenha um método get() na sua lista
+            result.append("Loc ").append(i + 1).append(": (").append(location.getCoordinateX()).append(", ").append(location.getCoordinateY()).append(")\n");
+            ArrayUnorderedList<ILocation> neighbors = locations.getNeighbors(location); // Supondo que você tenha esse método
+            for (int j = 0; j < neighbors.size(); j++) {
+                ILocation neighbor = neighbors.get(j);
+                result.append(" -> Conecta a Loc ").append(vertices.indexOf(neighbor) + 1).append("\n"); // Supondo que você tenha um método indexOf() na sua lista
+            }
+        }
         return result.toString();
     }
+
 
     /**
      * Sets the flags for both players on the map.

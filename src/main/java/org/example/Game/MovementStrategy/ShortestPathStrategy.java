@@ -1,8 +1,11 @@
 package org.example.Game.MovementStrategy;
 
-import org.example.Game.Classes.FlagGameWGraph;
-import org.example.Game.Classes.GameMap;
-import org.example.Game.Interfaces.*;
+import org.example.Game.Entities.FlagGameWGraph;
+import org.example.Game.Entities.GameMap;
+import org.example.Game.Entities.Interfaces.IBot;
+import org.example.Game.Entities.Interfaces.IGameMap;
+import org.example.Game.Entities.Interfaces.ILocation;
+import org.example.Game.MovementStrategy.Interfaces.IMovementStrategy;
 
 import java.util.Iterator;
 

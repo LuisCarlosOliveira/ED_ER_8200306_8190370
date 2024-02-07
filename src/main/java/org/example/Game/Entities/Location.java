@@ -1,6 +1,6 @@
-package org.example.Game.Classes;
+package org.example.Game.Entities;
 
-import org.example.Game.Interfaces.ILocation;
+import org.example.Game.Entities.Interfaces.ILocation;
 
 import java.util.Objects;
 

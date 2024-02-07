@@ -1,9 +1,9 @@
 package org.example.Game.MovementStrategy;
 
-import org.example.Game.Interfaces.IBot;
-import org.example.Game.Interfaces.IGameMap;
-import org.example.Game.Interfaces.ILocation;
-import org.example.Game.Interfaces.IMovementStrategy;
+import org.example.Game.Entities.Interfaces.IBot;
+import org.example.Game.Entities.Interfaces.IGameMap;
+import org.example.Game.Entities.Interfaces.ILocation;
+import org.example.Game.MovementStrategy.Interfaces.IMovementStrategy;
 
 /**
  * Abstract class representing a generic movement strategy for bots in the game.

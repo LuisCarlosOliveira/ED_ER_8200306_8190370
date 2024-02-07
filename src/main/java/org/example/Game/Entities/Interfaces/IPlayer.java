@@ -1,4 +1,4 @@
-package org.example.Game.Interfaces;
+package org.example.Game.Entities.Interfaces;
 
 import org.example.Structures.Implementations.ArrayUnorderedList;
 

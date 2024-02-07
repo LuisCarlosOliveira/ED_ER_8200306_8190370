@@ -1,7 +1,6 @@
-package org.example.Game.Interfaces;
+package org.example.Game.Entities.Interfaces;
 
-import org.example.Game.Classes.FlagGameWGraph;
-import org.example.Structures.Implementations.Network;
+import org.example.Game.Entities.FlagGameWGraph;
 
 /**
  * Represents the interface for a game map in the context of the game.

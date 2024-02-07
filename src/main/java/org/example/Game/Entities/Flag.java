@@ -1,8 +1,8 @@
-package org.example.Game.Classes;
+package org.example.Game.Entities;
 
-import org.example.Game.Interfaces.IFlag;
-import org.example.Game.Interfaces.ILocation;
-import org.example.Game.Interfaces.IPlayer;
+import org.example.Game.Entities.Interfaces.IFlag;
+import org.example.Game.Entities.Interfaces.ILocation;
+import org.example.Game.Entities.Interfaces.IPlayer;
 
 /**
  * Represents a flag in the game that players can capture and defend.
@@ -52,29 +52,6 @@ public class Flag implements IFlag {
     }
     
 
-    /**
-     * Checks if the flag is captured by a player.
-     *
-     * @return True if the flag is captured, false otherwise.
-     */
-    public boolean isCaptured() {
-        return isCaptured;
-    }
-
-    /**
-     * Checks if the flag is captured by a player.
-     *
-     * @return True if the flag is captured, false otherwise.
-     */
-    public void setCaptured(boolean captured) {
-        isCaptured = captured;
-    }
-
-    /**
-     * Provides a string representation of the flag.
-     *
-     * @return A string representation of the flag.
-     */
     @Override
     public String toString() {
         return "Flag{" +

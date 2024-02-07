@@ -1,6 +1,6 @@
-package org.example.Game.Classes;
+package org.example.Game.Entities;
 
-import org.example.Game.Interfaces.*;
+import org.example.Game.Entities.Interfaces.*;
 import org.example.Structures.Implementations.ArrayUnorderedList;
 
 import java.util.Scanner;

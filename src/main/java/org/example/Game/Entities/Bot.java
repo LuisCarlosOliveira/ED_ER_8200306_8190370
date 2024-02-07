@@ -1,7 +1,8 @@
-package org.example.Game.Classes;
+package org.example.Game.Entities;
 
-import org.example.Game.Interfaces.*;
-import org.example.Game.MovementStrategy.MovementStrategy;
+import org.example.Game.Entities.Interfaces.*;
+import org.example.Game.MovementStrategy.Interfaces.IMovementStrategy;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**

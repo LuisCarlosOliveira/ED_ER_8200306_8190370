@@ -1,19 +1,15 @@
 package org.example.Game.MovementStrategy;
 
 
-import org.example.Game.Classes.FlagGameWGraph;
-import org.example.Game.Classes.GameMap;
-import org.example.Game.Interfaces.IBot;
-import org.example.Game.Interfaces.IGameMap;
-import org.example.Game.Interfaces.ILocation;
-import org.example.Game.Interfaces.IMovementStrategy;
-import org.example.Structures.Implementations.ArrayUnorderedList;
-import org.example.Structures.Implementations.Graph;
+import org.example.Game.Entities.FlagGameWGraph;
+import org.example.Game.Entities.GameMap;
+import org.example.Game.Entities.Interfaces.IBot;
+import org.example.Game.Entities.Interfaces.IGameMap;
+import org.example.Game.Entities.Interfaces.ILocation;
+import org.example.Game.MovementStrategy.Interfaces.IMovementStrategy;
 import org.example.Structures.Implementations.Network;
 
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
 /**
  * Movement strategy based on the Minimum Spanning Tree (MST) of the game map.
